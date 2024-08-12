@@ -3,12 +3,12 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import "./passport.js";
-import { dbConnect } from "./mongo";
+import { dbConnect } from "./postgres/index.js"; // Atualize para PostgreSQL
 import { meRoutes, authRoutes } from "./routes";
 import path from "path";
 import * as fs from "fs";
 import cron from "node-cron";
-import ReseedAction from "./mongo/ReseedAction";
+import ReseedAction from "./postgres/ReseedAction"; // Atualize para PostgreSQL
 
 dotenv.config();
 
@@ -41,9 +41,10 @@ app.use("/", authRoutes);
 app.use("/me", meRoutes);
 
 if (process.env.SCHEDULE_HOUR) {
-  cron.schedule(`0 */${process.env.SCHEDULE_HOUR} * * *'`, () => {
-    ReseedAction();
+  cron.schedule(`0 */${process.env.SCHEDULE_HOUR} * * *`, () => {
+    ReseedAction(); // Atualize para PostgreSQL
   });
 }
 
 app.listen(PORT, () => console.log(`Server listening to port ${PORT}`));
+
