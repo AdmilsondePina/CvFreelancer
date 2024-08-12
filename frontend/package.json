@@ -54,18 +54,19 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@babel/eslint-parser": "^7.25.1",
-    "eslint": "^9.9.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-react": "^7.35.0",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "prettier": "^3.0.3"
-  },
+  
+ "devDependencies": {
+  "@babel/eslint-parser": "^7.25.1",
+  "eslint": "^8.57.0",
+  "eslint-config-airbnb": "^19.0.4",
+  "eslint-config-prettier": "^9.0.0",
+  "eslint-plugin-import": "^2.25.4",
+  "eslint-plugin-jsx-a11y": "^6.5.1",
+  "eslint-plugin-prettier": "^5.0.0",
+  "eslint-plugin-react": "^7.35.0",
+  "eslint-plugin-react-hooks": "^4.6.2",
+  "prettier": "^3.0.3"
+},
   "homepage": "https://meusite.com/projeto",
   "proxy": "http://localhost:5000"
 }

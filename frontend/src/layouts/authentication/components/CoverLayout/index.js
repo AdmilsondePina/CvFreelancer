@@ -16,7 +16,9 @@ import Footer from "layouts/authentication/components/Footer";
 
 function CoverLayout({ coverHeight, image, children }) {
   return (
-    <PageLayout>
+    <PageLayout
+      sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    >
       <MDBox
         width="calc(100% - 2rem)"
         minHeight={coverHeight}
@@ -37,21 +39,20 @@ function CoverLayout({ coverHeight, image, children }) {
           backgroundRepeat: "no-repeat",
         }}
       />
-      <MDBox mt={{ xs: -20, lg: -18 }} px={1} width="calc(100% - 2rem)" mx="auto">
+      <MDBox mt={{ xs: -20, lg: -18 }} px={1} width="calc(100% - 2rem)" mx="auto" flexGrow={1}>
         <Grid container spacing={1} justifyContent="center">
           <Grid item xs={11} sm={9} md={5} lg={4} xl={3}>
             {children}
           </Grid>
         </Grid>
       </MDBox>
-      <Footer />
     </PageLayout>
   );
 }
 
 // Setting default props for the CoverLayout
 CoverLayout.defaultProps = {
-  coverHeight: "35vh",
+  coverHeight: "30vh",
 };
 
 // Typechecking props for the CoverLayout

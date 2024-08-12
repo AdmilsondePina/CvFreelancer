@@ -91,10 +91,10 @@ function ForgotPassword() {
           textAlign="center"
         >
           <MDTypography variant="h3" fontWeight="medium" color="white" mt={1}>
-            Reset Password
+            CV Freelancer
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            You will receive an e-mail in maximum 60 seconds
+            Receberás um email de confirmacão
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -118,7 +118,7 @@ function ForgotPassword() {
             )}
             <MDBox mt={6} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                reset
+                Enviar
               </MDButton>
             </MDBox>
           </MDBox>

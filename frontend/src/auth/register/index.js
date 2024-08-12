@@ -1,23 +1,13 @@
 import { useContext, useState } from "react";
-// react-router-dom components
 import { Link } from "react-router-dom";
-
-// @mui material components
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
-// Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
-
-// Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
-
 import AuthService from "services/auth-service";
 import { AuthContext } from "context";
 import { InputLabel } from "@mui/material";
@@ -29,6 +19,7 @@ function Register() {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "", // Adicionando campo de confirmação de palavra-passe
     agree: false,
   });
 
@@ -36,6 +27,7 @@ function Register() {
     nameError: false,
     emailError: false,
     passwordError: false,
+    confirmPasswordError: false, // Adicionando erro de confirmação de palavra-passe
     agreeError: false,
     error: false,
     errorText: "",
@@ -68,12 +60,16 @@ function Register() {
       return;
     }
 
+    if (inputs.password !== inputs.confirmPassword) {
+      setErrors({ ...errors, confirmPasswordError: true });
+      return;
+    }
+
     if (inputs.agree === false) {
       setErrors({ ...errors, agreeError: true });
       return;
     }
 
-    // here will be the post action to add a user to the db
     const newUser = { name: inputs.name, email: inputs.email, password: inputs.password };
 
     const myData = {
@@ -101,6 +97,7 @@ function Register() {
         name: "",
         email: "",
         password: "",
+        confirmPassword: "",
         agree: false,
       });
 
@@ -108,6 +105,7 @@ function Register() {
         nameError: false,
         emailError: false,
         passwordError: false,
+        confirmPasswordError: false,
         agreeError: false,
         error: false,
         errorText: "",
@@ -136,7 +134,7 @@ function Register() {
             Cv Freelancer
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Insira seu nome, email, e palavra passe  para criar sua conta
+            Insira seu nome, email, e password para criar sua conta
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -183,7 +181,7 @@ function Register() {
               />
               {errors.emailError && (
                 <MDTypography variant="caption" color="error" fontWeight="light">
-                  The email must be valid
+                  Email Inválido
                 </MDTypography>
               )}
             </MDBox>
@@ -200,7 +198,24 @@ function Register() {
               />
               {errors.passwordError && (
                 <MDTypography variant="caption" color="error" fontWeight="light">
-                  The password must be of at least 8 characters
+                  A password precisa ter 8 caracteres
+                </MDTypography>
+              )}
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                type="password"
+                label="Confirmar Password"
+                variant="standard"
+                fullWidth
+                name="confirmPassword"
+                value={inputs.confirmPassword}
+                onChange={changeHandler}
+                error={errors.confirmPasswordError}
+              />
+              {errors.confirmPasswordError && (
+                <MDTypography variant="caption" color="error" fontWeight="light">
+                  As passwords não coincidem
                 </MDTypography>
               )}
             </MDBox>
@@ -213,7 +228,7 @@ function Register() {
                 sx={{ lineHeight: "1.5", cursor: "pointer" }}
                 htmlFor="agree"
               >
-                &nbsp;&nbsp;I agree to the&nbsp;
+                &nbsp;&nbsp;Eu concordo com&nbsp;
               </InputLabel>
               <MDTypography
                 component={Link}
@@ -223,12 +238,12 @@ function Register() {
                 color="info"
                 textGradient
               >
-                Terms and Conditions
+                Termos e Condições
               </MDTypography>
             </MDBox>
             {errors.agreeError && (
               <MDTypography variant="caption" color="error" fontWeight="light">
-                You must agree to the Terms and Conditions
+                Precisas acordar com os Termos e Condições
               </MDTypography>
             )}
             {errors.error && (
@@ -238,12 +253,12 @@ function Register() {
             )}
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                sign in
+                Criar
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
-                Already have an account?{" "}
+               Ja tens uma conta?{" "}
                 <MDTypography
                   component={Link}
                   to="/auth/login"
@@ -252,7 +267,7 @@ function Register() {
                   fontWeight="medium"
                   textGradient
                 >
-                  Sign In
+                  Entrar
                 </MDTypography>
               </MDTypography>
             </MDBox>

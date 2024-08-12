@@ -68,13 +68,13 @@ function Footer({ light }) {
             })}
           >
             <MDBox component="li" pr={2} lineHeight={1}>
-              <Link href="https://www.updivision.com/" target="_blank">
+              <Link href="" target="_blank">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"
                   color={light ? "white" : "dark"}
                 >
-                Freelancer
+                Freelancers
                 </MDTypography>
               </Link>
             </MDBox>
@@ -96,12 +96,12 @@ function Footer({ light }) {
                   fontWeight="regular"
                   color={light ? "white" : "dark"}
                 >
-                  Sobre
+                  Oportunidades
                 </MDTypography>
               </Link>
             </MDBox>
             <MDBox component="li" px={2} lineHeight={1}>
-              <Link href="https://www.creative-tim.com/blog" target="_blank">
+              <Link href="" target="_blank">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"

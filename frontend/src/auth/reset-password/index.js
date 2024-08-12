@@ -120,10 +120,10 @@ const PasswordReset = () => {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Join us today
+            Cv Freelancer
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Enter your new password and its confirmation for update
+            Confirma sua nova password
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -143,7 +143,7 @@ const PasswordReset = () => {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Password Confirmation"
+                label="Confirmar Password "
                 variant="standard"
                 fullWidth
                 name="password_confirmation"
@@ -161,12 +161,12 @@ const PasswordReset = () => {
 
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                change
+                Confirmar
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
-                Already have an account?{" "}
+                Já tens uma conta?{" "}
                 <MDTypography
                   component={Link}
                   to="/auth/login"
@@ -175,7 +175,7 @@ const PasswordReset = () => {
                   fontWeight="medium"
                   textGradient
                 >
-                  Sign In
+                  Entrar
                 </MDTypography>
               </MDTypography>
             </MDBox>
@@ -185,7 +185,7 @@ const PasswordReset = () => {
       {notification && (
         <MDAlert color="info" mt="20px" dismissible>
           <MDTypography variant="body2" color="white">
-            Your password change was successful. Go back to
+            Sua password foi alterada com sucesso. Voltar
             <MDTypography
               component={Link}
               to="/auth/login"
@@ -195,7 +195,7 @@ const PasswordReset = () => {
             >
               &nbsp;login&nbsp;
             </MDTypography>
-            to authenticate.
+            Entrar.
           </MDTypography>
         </MDAlert>
       )}
