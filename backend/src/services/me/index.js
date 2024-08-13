@@ -37,15 +37,15 @@ export const patchProfileRouteHandler = async (req, res) => {
   const foundUser = await userModel.findOne({ email: currentDataOfUser.email});
 
   if (!foundUser) {
-    res.status(400).json({error: 'No user matches the credentials'});
+    res.status(400).json({error: 'Nenhum utilizador corresponde às credenciais'});
   } else {
-    // check password more than 8 characters, new password matched the password confirmation
-    if (newPassword && newPassword < 7 || newPassword != confirmPassword) {
-      res.status(400).json({errors: { password: ["The password should have at lest 8 characters and match the password confirmation."] }});
-    } else if (newPassword && newPassword > 7 && newPassword == confirmPassword) {
+    // verificar se a palavra-passe tem mais de 8 caracteres, se a nova palavra-passe corresponde à confirmação
+    if (newPassword && newPassword.length < 8 || newPassword !== confirmPassword) {
+      res.status(400).json({errors: { password: ["A palavra-passe deve ter pelo menos 8 caracteres e corresponder à confirmação da palavra-passe."] }});
+    } else if (newPassword && newPassword.length >= 8 && newPassword === confirmPassword) {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(newPassword, salt);
-      try{
+      try {
         await userModel.updateOne( { email: foundUser.email }, { $set :{ "name": name, "email": email, "password": hashPassword } });
       } catch(err) {
         console.error(err);

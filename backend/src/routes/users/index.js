@@ -1,22 +1,19 @@
 import express from 'express';
+import { getAllUsers } from '../../schemas/user.schema.js'; // Função que faz a consulta ao banco de dados
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  const users = await getAllUsers(); // Faz a consulta para buscar todos os usuários
+
   res.send({
-    data: [
-      {
-        id: 1,
-        firstName: 'John',
-        lastName: 'Smith',
-      },
-      {
-        id: 2,
-        firstName: 'Stacey',
-        lastName: 'Smith',
-      },
-    ],
+    data: users.map(user => ({
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    })),
   });
 });
 
 export default router;
+
