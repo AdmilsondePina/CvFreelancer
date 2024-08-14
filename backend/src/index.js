@@ -15,23 +15,28 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+const allowedOrigins = ['http://localhost:3000']; // Adicione todas as origens permitidas aqui
 
-const whitelist = [process.env.APP_URL_CLIENT];
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || whitelist.indexOf(origin) !== -1) {
+
+    console.log(`Origin: ${origin}`);   // Log para depuração
+
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log("Origin not allowed by CORS:", origin); // Isso ajuda a depurar
       callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
 };
 
+
 connectDB();
 
 app.use(cors(corsOptions));
-app.use(bodyParser.json({ type: "application/vnd.api+json", strict: false }));
+app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
   const __dirname = fs.realpathSync(".");

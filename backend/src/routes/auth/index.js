@@ -10,32 +10,39 @@ import { findUserByEmail } from '../../schemas/user.schema.js';
 
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
+router.post('login', async (req, res) => {
   try {
+    console.log('Request body:', req.body);  // Log do corpo da solicitação
+    if (!req.body || !req.body.data || !req.body.data.attributes) {
+      return res.status(400).json({ error: "Invalid request format" });
+    }
     const { email, password } = req.body.data.attributes;
     
     const user = await findUserByEmail(email);
     if (!user) {
+      console.log('User not found');
       return res.status(401).json({ error: "User not found" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      console.log('Invalid password');
       return res.status(401).json({ error: "Invalid password" });
     }
 
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });
   } catch (error) {
+    console.error('Error during login:', error);  // Log do erro
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.post("/logout", (req, res) => {
+router.post("logout", (req, res) => {
   return res.sendStatus(204);
 });
 
-router.post("/register", async (req, res) => {
+router.post("register", async (req, res) => {
   try {
     const { name, email, password } = req.body.data.attributes;
     await registerRouteHandler(req, res, name, email, password);
@@ -44,7 +51,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/password-forgot", async (req, res) => {
+router.post("password-forgot", async (req, res) => {
   try {
     const { email } = req.body.data.attributes;
     await forgotPasswordRouteHandler(req, res, email);
@@ -53,7 +60,7 @@ router.post("/password-forgot", async (req, res) => {
   }
 });
 
-router.post("/password-reset", async (req, res) => {
+router.post("password-reset", async (req, res) => {
   try {
     await resetPasswordRouteHandler(req, res);
   } catch (error) {
