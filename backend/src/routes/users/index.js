@@ -4,16 +4,18 @@ import { getAllUsers } from '../../schemas/user.schema.js'; // Função que faz 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const users = await getAllUsers(); // Faz a consulta para buscar todos os usuários
-
-  res.send({
-    data: users.map(user => ({
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    })),
-  });
+  try {
+    const users = await getAllUsers(); // Faz a consulta para buscar todos os usuários
+    res.send({
+      data: users.map(user => ({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      })),
+    });
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to retrieve users' });
+  }
 });
 
 export default router;
-

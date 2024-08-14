@@ -3,7 +3,8 @@ import nodemailer from "nodemailer";
 import randomToken from "random-token";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
-import { Pool } from 'pg';
+import pg from 'pg';
+const { Pool } = pg;
 
 dotenv.config();
 

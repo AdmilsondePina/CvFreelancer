@@ -1,49 +1,65 @@
-import { dbConnect } from '../postgres/index.js';
+// user.schema.js
+import pg from 'pg';
+const { Pool } = pg;
+import dotenv from 'dotenv';
 
-export const createUserTable = async () => {
-  const client = dbConnect();
+dotenv.config();
 
-  const query = `
-    CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(100) NOT NULL,
-      email VARCHAR(100) UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      profile_image TEXT
-    )
-  `;
-  
-  await client.query(query);
-  client.end();
+const pool = new Pool({
+  user: process.env.POSTGRES_USER,
+  host: 'localhost',
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: 5432,
+});
+
+export const getAllUsers = async () => {
+  const client = await pool.connect();
+  try {
+    const query = 'SELECT * FROM users';
+    const result = await client.query(query);
+    return result.rows;
+  } finally {
+    client.release();
+  }
 };
 
-export const insertUser = async (user) => {
-  const client = dbConnect();
-
-  const query = `
-    INSERT INTO users (name, email, password, created_at, profile_image)
-    VALUES ($1, $2, $3, $4, $5)
-    RETURNING *
-  `;
-
-  const values = [user.name, user.email, user.password, user.created_at, user.profile_image];
-
-  const result = await client.query(query, values);
-  client.end();
-
-  return result.rows[0];
+export const getUserById = async (id) => {
+  const client = await pool.connect();
+  try {
+    const query = 'SELECT * FROM users WHERE id = $1';
+    const result = await client.query(query, [id]);
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
 };
 
 export const findUserByEmail = async (email) => {
-  const client = dbConnect();
+  const client = await pool.connect();
+  try {
+    const query = 'SELECT * FROM users WHERE email = $1';
+    const result = await client.query(query, [email]);
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
+};
 
-  const query = `
-    SELECT * FROM users WHERE email = $1
-  `;
-
-  const result = await client.query(query, [email]);
-  client.end();
-
-  return result.rows[0];
+// Adicione a função updateUserProfile se não existir
+export const updateUserProfile = async (id, updates) => {
+  const client = await pool.connect();
+  try {
+    const query = `
+      UPDATE users
+      SET name = $1, email = $2, password = $3
+      WHERE id = $4
+      RETURNING *;
+    `;
+    const values = [updates.name, updates.email, updates.password || null, id];
+    const result = await client.query(query, values);
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
 };

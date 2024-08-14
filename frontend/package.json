@@ -68,5 +68,5 @@
   "prettier": "^3.0.3"
 },
   "homepage": "https://meusite.com/projeto",
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000/login"
 }

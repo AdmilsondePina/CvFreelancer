@@ -1,12 +1,12 @@
 import express from "express";
 import passport from "passport";
-import { getProfileRouteHandler, patchProfileRouteHandler } from "../../services/me";
+import { getProfileRouteHandler, patchProfileRouteHandler } from "../../services/me/index.js";
 import { findUserByEmail, updateUserProfile } from "../../schemas/user.schema.js";
 
 const router = express.Router();
 
 // get user's profile
-router.get("/", passport.authenticate('jwt',{session: false}), async (req, res) => {
+router.post("/", passport.authenticate('jwt',{session: false}), async (req, res) => {
   const email = req.user.email;
   const user = await findUserByEmail(email);
 

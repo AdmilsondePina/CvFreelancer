@@ -1,41 +1,51 @@
 import bcrypt from 'bcrypt';
-import { dbConnect } from './index.js';
+import { connectDB, disconnectDB, createUserTable, insertUser, findUserByEmail } from './index.js';
 
-const ReseedAction = () => {
+const ReseedAction = async () => {
   async function clear() {
-    const client = dbConnect();
-    await client.query('DELETE FROM users');
-    console.log("DB cleared");
-    client.end();
+    try {
+      await connectDB(); // Conecta ao banco de dados
+      await client.query('DELETE FROM users'); // Limpa a tabela de usuários
+      console.log("DB cleared");
+    } catch (error) {
+      console.error("Error clearing DB", error.stack);
+    } finally {
+      await disconnectDB(); // Desconecta do banco de dados
+    }
   }
 
   async function seedDB() {
-    await clear();
-    const client = dbConnect();
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash("secret", salt);
+    await clear(); // Limpa a tabela antes de inserir dados
 
-    const user = {
-      id: 1,
-      name: "Admin",
-      email: "admin@jsonapi.com",
-      password: hashPassword,
-      created_at: new Date(),
-      profile_image: "../../images/admin.jpg",
-    };
+    try {
+      await connectDB(); // Conecta ao banco de dados
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash("secret", salt);
 
-    const query = `
-      INSERT INTO users (id, name, email, password, created_at, profile_image)
-      VALUES ($1, $2, $3, $4, $5, $6)
-    `;
-    await client.query(query, [user.id, user.name, user.email, user.password, user.created_at, user.profile_image]);
+      const user = {
+        id: 1,
+        name: "Admin",
+        email: "admin@jsonapi.com",
+        password: hashPassword,
+        created_at: new Date(),
+        profile_image: "../../images/admin.jpg",
+      };
 
-    console.log("DB seeded");
-    client.end();
+      const query = `
+        INSERT INTO users (id, name, email, password, created_at, profile_image)
+        VALUES ($1, $2, $3, $4, $5, $6)
+      `;
+      await client.query(query, [user.id, user.name, user.email, user.password, user.created_at, user.profile_image]);
+
+      console.log("DB seeded");
+    } catch (error) {
+      console.error("Error seeding DB", error.stack);
+    } finally {
+      await disconnectDB(); // Desconecta do banco de dados
+    }
   }
 
-  seedDB();
+  await seedDB(); // Executa a função seedDB
 };
 
 export default ReseedAction;
-

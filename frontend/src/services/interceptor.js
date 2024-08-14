@@ -1,4 +1,4 @@
-import HttpService from "./htttp.service";
+import HttpService from "./http.service";
 
 export const setupAxiosInterceptors = (onUnauthenticated) => {
   const onRequestSuccess = async (config) => {

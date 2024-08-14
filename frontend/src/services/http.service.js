@@ -42,5 +42,6 @@ export class HttpService {
     });
   }
 }
+console.log("Attempting to connect to:", `${API_URL}`);
 
 export default new HttpService();
