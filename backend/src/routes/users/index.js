@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const users = await getAllUsers(); // Faz a consulta para buscar todos os usuários
+    const users = await getAllUsers(); // Faz a consulta para buscar todos os utilizadors
     res.send({
       data: users.map(user => ({
         id: user.id,

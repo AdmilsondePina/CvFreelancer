@@ -5,7 +5,7 @@ const ReseedAction = async () => {
   async function clear() {
     try {
       await connectDB(); // Conecta ao banco de dados
-      await client.query('DELETE FROM users'); // Limpa a tabela de usuários
+      await client.query('DELETE FROM users'); // Limpa a tabela de utilizadors
       console.log("DB cleared");
     } catch (error) {
       console.error("Error clearing DB", error.stack);

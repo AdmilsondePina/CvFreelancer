@@ -25,7 +25,7 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log("Origin not allowed by CORS:", origin); // Isso ajuda a depurar
+      console.log("Origin not allowed by CORS:", origin); 
       callback(new Error("Not allowed by CORS"));
     }
   },
@@ -43,9 +43,12 @@ app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "/src/landing/index.html"));
 });
 
+
+app.use(express.json()); // Para processar requisições com JSON
 app.use("/auth", authRoutes);  // Verifique se a rota está corretamente configurada
 app.use("/me", meRoutes);
 app.use("/users", userRoutes);
+
 
 if (process.env.SCHEDULE_HOUR) {
   cron.schedule(`0 */${process.env.SCHEDULE_HOUR} * * *`, () => {

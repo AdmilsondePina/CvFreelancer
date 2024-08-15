@@ -1,7 +1,5 @@
-import React from 'react';
-import { useEffect, useState } from "react";
-// react-router-dom components
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // useNavigate para redirecionamento
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -21,7 +19,6 @@ import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
 import AuthService from "services/auth-service";
 
-// for the reset I should take from the url the token sent and the email
 const PasswordReset = () => {
   const [token, setToken] = useState(null);
   const [email, setEmail] = useState(null);
@@ -38,6 +35,8 @@ const PasswordReset = () => {
     error: false,
     textError: "",
   });
+
+  const navigate = useNavigate(); // Use useNavigate for redirection
 
   const changeHandler = (e) => {
     setInputs({
@@ -95,9 +94,10 @@ const PasswordReset = () => {
         textError: "",
       });
 
-      if (errors.passwordError === false && errors.confirmationError === false) {
-        setNotification(true);
-      }
+      setNotification(true);
+
+      // Redirect to login page after successful password reset
+      setTimeout(() => navigate("/auth/login"), 3000); // Redirect after 3 seconds to allow user to see notification
     } catch (err) {
       if (err.hasOwnProperty("errors")) {
         setErrors({ ...errors, error: true, textError: err.errors.password[0] });
@@ -144,7 +144,7 @@ const PasswordReset = () => {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Confirmar Password "
+                label="Confirmar Password"
                 variant="standard"
                 fullWidth
                 name="password_confirmation"

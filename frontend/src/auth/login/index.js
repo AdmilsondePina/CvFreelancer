@@ -59,54 +59,44 @@ function Login() {
   };
 
   const submitHandler = async (e) => {
-    // check rememeber me?
     e.preventDefault();
-
+  
     const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
+  
     if (inputs.email.trim().length === 0 || !inputs.email.trim().match(mailFormat)) {
       setErrors({ ...errors, emailError: true });
       return;
     }
-
+  
     if (inputs.password.trim().length < 6) {
       setErrors({ ...errors, passwordError: true });
       return;
     }
-
+  
     const newUser = { email: inputs.email, password: inputs.password };
     addUserHandler(newUser);
-
+  
     const myData = {
       data: {
         type: "token",
         attributes: { ...newUser },
       },
     };
-
+    
     try {
+      
       const response = await AuthService.login(myData);
       authContext.login(response.access_token, response.refresh_token);
-    } catch (res) {
-      if (res.hasOwnProperty("message")) {
-        setCredentialsError(res.message);
+      window.location.href = "/dashboard"; // Exemplo de redirecionamento após login
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setCredentialsError(error.response.data.message || "Erro ao fazer login.");
       } else {
-        setCredentialsError(res.errors[0].detail);
+        setCredentialsError("Erro inesperado. Tente novamente.");
       }
     }
-
-    return () => {
-      setInputs({
-        email: "",
-        password: "",
-      });
-
-      setErrors({
-        emailError: false,
-        passwordError: false,
-      });
-    };
   };
+  
 
   return (
     <BasicLayoutLanding image={bgImage}>

@@ -35,7 +35,7 @@ export const disconnectDB = async () => {
   }
 };
 
-// Função para criar a tabela de usuários
+// Função para criar a tabela de utilizadors
 export const createUserTable = async () => {
   try {
     await connectDB();
@@ -57,7 +57,7 @@ export const createUserTable = async () => {
   }
 };
 
-// Função para inserir um usuário
+// Função para inserir um utilizador
 export const insertUser = async (user) => {
   try {
     await connectDB();
@@ -76,7 +76,7 @@ export const insertUser = async (user) => {
   }
 };
 
-// Função para encontrar um usuário pelo e-mail
+// Função para encontrar um utilizador pelo e-mail
 export const findUserByEmail = async (email) => {
   try {
     await connectDB();

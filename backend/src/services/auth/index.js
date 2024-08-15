@@ -4,26 +4,28 @@ import randomToken from "random-token";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import pg from 'pg';
+import express from 'express';
 const { Pool } = pg;
 
 dotenv.config();
 
+const router = express.Router(); // Definindo o router
+
 // Configuração do pool para conexão com PostgreSQL
 const pool = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
+  user: process.env.POSTGRES_USER,
+  host: 'localhost',
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: 5432,
 });
 
 // Configuração do transporte de email
 const transporter = nodemailer.createTransport({
-  host: "smtp.mailtrap.io",
-  port: 2525,
+  service: 'gmail',
   auth: {
-    user: process.env.MAILTRAP_USER,
-    pass: process.env.MAILTRAP_PASSWORD,
+    user: process.env.GMAIL_USER, // Seu email do Gmail
+    pass: process.env.GMAIL_PASSWORD, // Sua senha do Gmail ou App Password
   },
 });
 
@@ -32,13 +34,13 @@ export const loginRouteHandler = async (req, res, email, password) => {
   try {
     const client = await pool.connect();
 
-    // Verificar se o usuário existe
+    // Verificar se o utilizador existe
     const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
     const foundUser = result.rows[0];
 
     if (!foundUser) {
       return res.status(400).json({
-        errors: [{ detail: "Credenciais não correspondem a nenhum usuário existente" }],
+        errors: [{ detail: "Credenciais não correspondem a nenhum utilizador existente" }],
       });
     }
 
@@ -69,10 +71,14 @@ export const loginRouteHandler = async (req, res, email, password) => {
 
 // Função para registro
 export const registerRouteHandler = async (req, res, name, email, password) => {
+  let client;
   try {
-    const client = await pool.connect();
+    if (typeof password !== 'string') {
+      return res.status(400).json({ message: "Password must be a string" });
+    }
 
-    // Verificar se o usuário já existe
+    client = await pool.connect();
+
     const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
     const foundUser = result.rows[0];
 
@@ -80,34 +86,40 @@ export const registerRouteHandler = async (req, res, name, email, password) => {
       return res.status(400).json({ message: "Email já está em uso" });
     }
 
-    // Verificar se a senha existe e tem pelo menos 8 caracteres
-    if (!password || password.length < 8) {
-      return res.status(400).json({ message: "A senha deve ter pelo menos 8 caracteres." });
-    }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Hash da senha para salvar no banco de dados
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(password, salt);
-
-    // Inserir novo usuário no banco de dados
     await client.query(
       'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
-      [name, email, hashPassword]
+      [name, email, hashedPassword]
     );
 
-    // Gerar token JWT
-    const token = jwt.sign({ email: email }, process.env.JWT_SECRET, { expiresIn: "24h" });
-    return res.status(200).json({
-      token_type: "Bearer",
-      expires_in: "24h",
-      access_token: token,
-      refresh_token: token,
-    });
+    return res.status(201).json({ message: "utilizador registrado com sucesso" });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Erro interno do servidor" });
+    console.error("Error during user registration:", error);
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  } finally {
+    if (client) client.release();
   }
 };
+
+
+// Rota de registro
+router.post("/register", async (req, res) => {
+  try {
+    const { name, email, password } = req.body.data.attributes;
+    await registerRouteHandler(req, res, name, email, password);
+  } catch (error) {
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Internal Server Error" });
+    } else {
+      console.error("Cannot send response, headers already sent.", error);
+    }
+  }
+});
+
+
 
 // Função para recuperação de senha
 export const forgotPasswordRouteHandler = async (req, res, email) => {
@@ -119,7 +131,7 @@ export const forgotPasswordRouteHandler = async (req, res, email) => {
 
     if (!foundUser) {
       return res.status(400).json({
-        errors: { email: ["O email não corresponde a nenhum usuário existente."] },
+        errors: { email: ["O email não corresponde a nenhum utilizador existente."] },
       });
     } else {
       const token = randomToken(20);
@@ -167,7 +179,7 @@ export const resetPasswordRouteHandler = async (req, res) => {
 
     if (!foundUser || !foundToken) {
       return res.status(400).json({
-        errors: { email: ["O email ou token não correspondem a nenhum usuário existente."] },
+        errors: { email: ["O email ou token não correspondem a nenhum utilizador existente."] },
       });
     }
 

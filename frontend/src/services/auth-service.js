@@ -4,27 +4,27 @@ class AuthService {
   authEndpoint = process.env.API_URL;
 
   login = async (payload) => {
-    const loginEndpoint = 'login';
+    const loginEndpoint = '/auth/login';
     return await HttpService.post(loginEndpoint, payload);
   };
 
   register = async (credentials) => {
-    const registerEndpoint = 'register';
+    const registerEndpoint = '/auth/register';
     return await HttpService.post(registerEndpoint, credentials);
   };
 
   logout = async () => {
-    const logoutEndpoint = 'logout';
+    const logoutEndpoint = '/auth/logout';
     return await HttpService.post(logoutEndpoint);
   };
 
   forgotPassword = async (payload) => {
-    const forgotPassword = 'password-forgot';
+    const forgotPassword = '/auth/password-forgot';
     return await HttpService.post(forgotPassword, payload);
   }
 
   resetPassword = async (credentials) => {
-    const resetPassword = 'password-reset';
+    const resetPassword = '/auth/password-reset';
     return await HttpService.post(resetPassword, credentials);
   }
 

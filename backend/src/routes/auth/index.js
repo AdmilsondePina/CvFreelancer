@@ -1,4 +1,5 @@
 import express from 'express';
+const router = express.Router();
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'; // Certifique-se de importar jwt para gerar tokens
 import {
@@ -8,16 +9,16 @@ import {
 } from '../../services/auth/index.js';
 import { findUserByEmail } from '../../schemas/user.schema.js'; 
 
-const router = express.Router();
 
-router.post('login', async (req, res) => {
+
+router.post('/login', async (req, res) => {
   try {
-    console.log('Request body:', req.body);  // Log do corpo da solicitação
+   
     if (!req.body || !req.body.data || !req.body.data.attributes) {
       return res.status(400).json({ error: "Invalid request format" });
     }
     const { email, password } = req.body.data.attributes;
-    
+
     const user = await findUserByEmail(email);
     if (!user) {
       console.log('User not found');
@@ -31,41 +32,56 @@ router.post('login', async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+    return res.json({ token });
   } catch (error) {
-    console.error('Error during login:', error);  // Log do erro
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error during login:', error);
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 });
 
-router.post("logout", (req, res) => {
+
+router.post("/logout", (req, res) => {
   return res.sendStatus(204);
 });
 
-router.post("register", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body.data.attributes;
     await registerRouteHandler(req, res, name, email, password);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Internal Server Error" });
+    } else {
+      console.error("Cannot send response, headers already sent.", error);
+    }
   }
 });
 
-router.post("password-forgot", async (req, res) => {
+
+router.post("/password-forgot", async (req, res) => {
   try {
     const { email } = req.body.data.attributes;
     await forgotPasswordRouteHandler(req, res, email);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 });
 
-router.post("password-reset", async (req, res) => {
+
+router.post("/password-reset", async (req, res) => {
+  
   try {
     await resetPasswordRouteHandler(req, res);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 });
+
 
 export default router;
