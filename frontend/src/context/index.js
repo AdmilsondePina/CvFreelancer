@@ -1,22 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-/**
-  This file is used for controlling the global states of the components,
-  you can customize the states for the different components here.
-*/
 
 import { createContext, useContext, useReducer, useMemo, useState, useEffect } from "react";
 
@@ -41,7 +22,8 @@ const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
+
 
   useEffect(() => {
     if (!token) return;
@@ -51,20 +33,23 @@ const AuthContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (!token) return;
-
-    setIsAuthenticated(isAuthenticated);
-    navigate(location.pathname);
-  }, [isAuthenticated]);
-
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+      navigate(location.pathname);
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, [navigate, location.pathname]);
+  
   const login = (token) => {
-    localStorage.setItem("token", token);
+    localStorage.getItem('token', token);
     setIsAuthenticated(true);
     navigate("/dashboard");
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
     setIsAuthenticated(false);
     navigate("/auth/login");
   };
@@ -185,3 +170,4 @@ export {
   setLayout,
   setDarkMode,
 };
+

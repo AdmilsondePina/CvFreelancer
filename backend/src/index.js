@@ -4,12 +4,13 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
-import authRoutes from './routes/auth/index.js'; // Certifique-se de que este caminho está correto
+import authRoutes from './routes/auth/index.js'; 
 import meRoutes from './routes/me/index.js';
 import userRoutes from './routes/users/index.js';
 import { connectDB } from './postgres/index.js'; 
 import cron from 'node-cron';
 import ReseedAction from './postgres/ReseedAction.js'; 
+import "./passport.js"; // Importa o arquivo onde a estratégia JWT é configurada
 
 dotenv.config();
 

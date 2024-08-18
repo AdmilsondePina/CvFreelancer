@@ -1,41 +1,63 @@
 import HttpService from "./http.service";
 
+const AUTH_ENDPOINTS = {
+  LOGIN: '/auth/login',
+  REGISTER: '/auth/register',
+  LOGOUT: '/auth/logout',
+  FORGOT_PASSWORD: '/auth/password-forgot',
+  RESET_PASSWORD: '/auth/password-reset',
+  PROFILE: '/me'
+};
+
 class AuthService {
   authEndpoint = process.env.API_URL;
 
   login = async (payload) => {
-    const loginEndpoint = '/auth/login';
-    return await HttpService.post(loginEndpoint, payload);
-  };
-
+    try {
+      
+  
+      // Envia a requisição de login
+      const response = await HttpService.post(AUTH_ENDPOINTS.LOGIN, payload);
+  
+      console.log("Login response:", response);
+  
+      // Verifica se o token está presente na resposta
+      if (response.token) {
+        localStorage.setItem('token', response.token); // Armazena o token
+        console.log("Token stored successfully:", localStorage.getItem('token'));
+      } else {
+        console.error("Token not found in response");
+      }
+  
+      return response;
+    } catch (error) {
+      console.error("Error during login:", error);
+      throw error;  
+    }
+  };    
+  
   register = async (credentials) => {
-    const registerEndpoint = '/auth/register';
-    return await HttpService.post(registerEndpoint, credentials);
+    return await HttpService.post(AUTH_ENDPOINTS.REGISTER, credentials);
   };
 
   logout = async () => {
-    const logoutEndpoint = '/auth/logout';
-    return await HttpService.post(logoutEndpoint);
+    return await HttpService.post(AUTH_ENDPOINTS.LOGOUT);
   };
 
   forgotPassword = async (payload) => {
-    const forgotPassword = '/auth/password-forgot';
-    return await HttpService.post(forgotPassword, payload);
+    return await HttpService.post(AUTH_ENDPOINTS.FORGOT_PASSWORD, payload);
   }
 
   resetPassword = async (credentials) => {
-    const resetPassword = '/auth/password-reset';
-    return await HttpService.post(resetPassword, credentials);
+    return await HttpService.post(AUTH_ENDPOINTS.RESET_PASSWORD, credentials);
   }
 
   getProfile = async() => {
-    const getProfile = 'me';
-    return await HttpService.get(getProfile);
+    return await HttpService.post(AUTH_ENDPOINTS.PROFILE);
   }
 
   updateProfile = async (newInfo) => {
-    const updateProfile = "me";
-    return await HttpService.patch(updateProfile, newInfo);
+    return await HttpService.patch(AUTH_ENDPOINTS.PROFILE, newInfo);
   }
 }
 

@@ -87,12 +87,11 @@ function Login() {
       
       const response = await AuthService.login(myData);
       authContext.login(response.access_token, response.refresh_token);
-      window.location.href = "/dashboard"; // Exemplo de redirecionamento após login
     } catch (error) {
       if (error.response && error.response.data) {
         setCredentialsError(error.response.data.message || "Erro ao fazer login.");
       } else {
-        setCredentialsError("Erro inesperado. Tente novamente.");
+        setCredentialsError("Email ou Password inválido. Tente novamente!");
       }
     }
   };

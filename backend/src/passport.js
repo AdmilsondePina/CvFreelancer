@@ -14,6 +14,7 @@ passport.use(
       secretOrKey: process.env.JWT_SECRET,
     },
     async function (jwtPayload, done) {
+     
       try {
         const user = await getUserById(jwtPayload.id);
         return done(null, user);
@@ -23,4 +24,6 @@ passport.use(
     }
   )
 );
+
+
 

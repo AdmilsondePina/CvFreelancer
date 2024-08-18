@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 import dotenv from 'dotenv';
 import { findUserByEmail, updateUserProfile } from "../../schemas/user.schema.js";
-
 import jwt from 'jsonwebtoken';
 
 dotenv.config();
@@ -27,24 +26,23 @@ export const getProfileRouteHandler = (req, res) => {
   res.send(sentData);
 };
 
-
 export const patchProfileRouteHandler = async (req, res) => {
   const currentDataOfUser = req.user;
   const { name, email, newPassword, confirmPassword } = req.body.data.attributes;
   
-  // Fetch the user from the database
+  // Buscar o usuário no banco de dados
   const foundUser = await findUserByEmail(currentDataOfUser.email);
 
   if (!foundUser) {
     return res.status(400).json({ error: 'Nenhum utilizador corresponde às credenciais' });
   }
 
-  // Validation checks
+  // Verificações de validação
   if (newPassword && (newPassword.length < 8 || newPassword !== confirmPassword)) {
     return res.status(400).json({ errors: { password: ["A palavra-passe deve ter pelo menos 8 caracteres e corresponder à confirmação da palavra-passe."] } });
   }
 
-  // Update user data
+  // Atualizar dados do usuário
   try {
     const updatedFields = { name, email };
     if (newPassword && newPassword.length >= 8 && newPassword === confirmPassword) {
@@ -53,7 +51,8 @@ export const patchProfileRouteHandler = async (req, res) => {
       updatedFields.password = hashPassword;
     }
 
-    await updateUser(foundUser.id, updatedFields);
+    // Usar a função correta para atualizar o perfil do usuário
+    await updateUserProfile(foundUser.id, updatedFields);
 
     const sentData = {
       data: {
@@ -72,3 +71,4 @@ export const patchProfileRouteHandler = async (req, res) => {
     res.status(500).json({ error: 'Erro ao atualizar o perfil' });
   }
 };
+

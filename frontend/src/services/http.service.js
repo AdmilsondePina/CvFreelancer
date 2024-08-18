@@ -6,8 +6,21 @@ Axios.defaults.baseURL = API_URL;
 export class HttpService {
   _axios = Axios.create();
 
-  addRequestInterceptor = (onFulfilled, onRejected) => {
-    this._axios.interceptors.request.use(onFulfilled, onRejected);
+  constructor() {
+    this.addRequestInterceptor();
+  }
+
+  addRequestInterceptor = () => {
+    this._axios.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
   };
 
   addResponseInterceptor = (onFulfilled, onRejected) => {
@@ -24,24 +37,30 @@ export class HttpService {
 
   delete = async (url) => await this.request(this.getOptionsConfig("delete", url));
 
-  getOptionsConfig = (method, url, data) => {
-    return {
-      method,
-      url,
-      data,
-      headers: { "Content-Type": "application/json", "Accept": "application/json", 'Access-Control-Allow-Credentials': true },
-    };
-  };
-
-  request(options) {
+  getOptionsConfig = (method, url, data) => ({
+    method,
+    url,
+    data,
+    headers: { 
+      "Content-Type": "application/json", 
+      "Accept": "application/json"
+    },
+  });
+  
+  request = (options) => {
     return new Promise((resolve, reject) => {
       this._axios
         .request(options)
         .then((res) => resolve(res.data))
-        .catch((ex) => reject(ex.response.data));
+        .catch((error) => {
+          console.error("Request failed:", error.response || error);
+          reject(error.response ? error.response.data : error);
+        });
     });
   }
 }
+
 console.log("Attempting to connect to:", `${API_URL}`);
 
 export default new HttpService();
+
