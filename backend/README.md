@@ -144,3 +144,7 @@ Updivision Blog: <https://updivision.com/blog/?ref=hceja-readme>
 
 - [Creative Tim](https://creative-tim.com/?ref=hceja-readme)
 - [UPDIVISION](https://updivision.com)
+
+
+Postgres DOCKER: docker exec -it <postgres-container-name> psql -U user -d nomiBD
+                \d
