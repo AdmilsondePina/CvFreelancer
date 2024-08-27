@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // useNavigate para redirecionamento
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
@@ -36,17 +34,17 @@ const PasswordReset = () => {
     textError: "",
   });
 
-  const navigate = useNavigate(); // Use useNavigate for redirection
+  const navigate = useNavigate();
 
   const changeHandler = (e) => {
     setInputs({
       ...inputs,
       [e.target.name]: e.target.value,
     });
+    setErrors({ ...errors, [`${e.target.name}Error`]: false });
   };
 
   useEffect(() => {
-    // get the token and email sent in the url
     const queryParams = new URLSearchParams(window.location.search);
     setToken(queryParams.get("token"));
     setEmail(queryParams.get("email"));
@@ -56,12 +54,12 @@ const PasswordReset = () => {
     e.preventDefault();
 
     if (inputs.password.trim().length < 6) {
-      setErrors({ ...errors, passwordError: true });
+      setErrors({ ...errors, passwordError: true, textError: "A palavra-passe deve ter pelo menos 6 caracteres." });
       return;
     }
 
     if (inputs.password_confirmation.trim() !== inputs.password.trim()) {
-      setErrors({ ...errors, confirmationError: true });
+      setErrors({ ...errors, confirmationError: true, textError: "As palavras-passe não coincidem." });
       return;
     }
 
@@ -96,8 +94,7 @@ const PasswordReset = () => {
 
       setNotification(true);
 
-      // Redirect to login page after successful password reset
-      setTimeout(() => navigate("/auth/login"), 3000); // Redirect after 3 seconds to allow user to see notification
+      setTimeout(() => navigate("/auth/login"), 3000);
     } catch (err) {
       if (err.hasOwnProperty("errors")) {
         setErrors({ ...errors, error: true, textError: err.errors.password[0] });
@@ -124,7 +121,7 @@ const PasswordReset = () => {
             Cv Freelancer
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Confirma sua nova password
+            Confirma sua nova palavra-passe
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -132,7 +129,7 @@ const PasswordReset = () => {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Password"
+                label="Palavra-passe"
                 variant="standard"
                 fullWidth
                 name="password"
@@ -144,7 +141,7 @@ const PasswordReset = () => {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Confirmar Password"
+                label="Confirmar Palavra-passe"
                 variant="standard"
                 fullWidth
                 name="password_confirmation"
@@ -154,7 +151,7 @@ const PasswordReset = () => {
               />
             </MDBox>
 
-            {errors.error && (
+            {(errors.passwordError || errors.confirmationError || errors.error) && (
               <MDTypography variant="caption" color="error" fontWeight="light">
                 {errors.textError}
               </MDTypography>
@@ -186,7 +183,7 @@ const PasswordReset = () => {
       {notification && (
         <MDAlert color="info" mt="20px" dismissible>
           <MDTypography variant="body2" color="white">
-            Sua password foi alterada com sucesso. Voltar
+            Sua palavra-passe foi alterada com sucesso. Voltar
             <MDTypography
               component={Link}
               to="/auth/login"
@@ -205,3 +202,4 @@ const PasswordReset = () => {
 };
 
 export default PasswordReset;
+

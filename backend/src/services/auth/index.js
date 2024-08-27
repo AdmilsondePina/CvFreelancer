@@ -140,8 +140,8 @@ export const forgotPasswordRouteHandler = async (req, res, email) => {
       await transporter.sendMail({
         from: "admin@jsonapi.com", // endereço do remetente
         to: email, // lista de destinatários
-        subject: "Redefinir Senha", // linha do assunto
-        html: `<p>Você solicitou a mudança de senha. Se esta solicitação não foi feita por você, por favor, entre em contato conosco. Acesse <a href='${process.env.APP_URL_CLIENT}/auth/reset-password?token=${token}&email=${email}'>este link</a> para redefinir sua senha.</p>`, // corpo do email em HTML
+        subject: "Redefinir Password", // linha do assunto
+        html: `<p>Solicitação para mudança de password. Se esta solicitação não foi feita por si, por favor, entre em contato conosco. Acesse <a href='${process.env.APP_URL_CLIENT}/auth/reset-password?token=${token}&email=${email}'>este link</a> para redefinir sua password.</p>`, // corpo do email em HTML
       });
 
       // Salvar token no banco de dados

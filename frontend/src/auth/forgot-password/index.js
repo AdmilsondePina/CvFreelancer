@@ -129,8 +129,8 @@ function ForgotPassword() {
         <MDAlert color="info" mt="20px" dismissible>
           <MDTypography variant="body2" color="white">
           {isDemo
-              ? "You can't update the password in the demo version"
-              : "Please check your email to reset your password."}
+              ? "------------------------------------------------------------"
+              : "Por favor verifique o seu email para redifinir sua password."}
           </MDTypography>
         </MDAlert>
       )}
