@@ -6,7 +6,8 @@ const AUTH_ENDPOINTS = {
   LOGOUT: '/auth/logout',
   FORGOT_PASSWORD: '/auth/password-forgot',
   RESET_PASSWORD: '/auth/password-reset',
-  PROFILE: '/me'
+  PROFILE: '/me',
+  CHECK_NAME: '/auth/check-name' // Endpoint para verificar o nome
 };
 
 class AuthService {
@@ -37,11 +38,30 @@ class AuthService {
   };    
   
   register = async (credentials) => {
+    // Verifica se o nome de usuário já está em uso
+    const nameCheckResponse = await HttpService.post(AUTH_ENDPOINTS.CHECK_NAME, { name: credentials.name });
+    
+    if (!nameCheckResponse.available) {
+      throw new Error(nameCheckResponse.message || "Nome de usuário já está em uso.");
+    }
+    
+    // Se o nome estiver disponível, continua com o registro
     return await HttpService.post(AUTH_ENDPOINTS.REGISTER, credentials);
   };
+  
 
   logout = async () => {
     return await HttpService.post(AUTH_ENDPOINTS.LOGOUT);
+  };
+
+  checkname = async (name) => {
+    try {
+      const response = await HttpService.post(AUTH_ENDPOINTS.CHECK_NAME, { name });
+      return response.available; // Supondo que a resposta tenha uma propriedade `available`
+    } catch (error) {
+      console.error("Error checking name availability:", error);
+      throw error;
+    }
   };
 
   forgotPassword = async (payload) => {

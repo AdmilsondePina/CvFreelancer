@@ -1,5 +1,4 @@
-import React from 'react';
-import { useContext, useState } from "react";
+import React, { useContext, useState } from 'react';
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
@@ -20,7 +19,7 @@ function Register() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "", // Adicionando campo de confirmação de palavra-passe
+    confirmPassword: "",
     agree: false,
   });
 
@@ -28,17 +27,40 @@ function Register() {
     nameError: false,
     emailError: false,
     passwordError: false,
-    confirmPasswordError: false, // Adicionando erro de confirmação de palavra-passe
+    confirmPasswordError: false,
     agreeError: false,
     error: false,
     errorText: "",
   });
 
-  const changeHandler = (e) => {
+  const [suggestedname, setSuggestedname] = useState("");
+
+  const changeHandler = async (e) => {
+    const { name, value } = e.target;
     setInputs({
       ...inputs,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    if (name === 'name') {
+      checknameAvailability(value);
+    }
+  };
+
+  const checknameAvailability = async (name) => {
+    try {
+      const isAvailable = await AuthService.checkname(name);
+      if (!isAvailable) {
+        const newname = `${name}${Math.floor(Math.random() * 1000)}`;
+        setSuggestedname(newname);
+        setErrors({ ...errors, nameError: true });
+      } else {
+        setSuggestedname("");
+        setErrors({ ...errors, nameError: false });
+      }
+    } catch (error) {
+      console.error("Error checking name availability", error);
+    }
   };
 
   const submitHandler = async (e) => {
@@ -143,7 +165,7 @@ function Register() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Name"
+                label="Username"
                 variant="standard"
                 fullWidth
                 name="name"
@@ -159,7 +181,7 @@ function Register() {
               />
               {errors.nameError && (
                 <MDTypography variant="caption" color="error" fontWeight="light">
-                  O nome não pode ficar vazio
+                  O nome de usuário já existe. Sugestão: {suggestedname}
                 </MDTypography>
               )}
             </MDBox>
@@ -259,7 +281,7 @@ function Register() {
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
-               Ja tens uma conta?{" "}
+                Ja tens uma conta?{" "}
                 <MDTypography
                   component={Link}
                   to="/auth/login"

@@ -46,7 +46,19 @@ export const findUserByEmail = async (email) => {
   }
 };
 
-// Adicione a função updateUserProfile se não existir
+export const findUserByEmailOrUsername = async (emailOrUsername) => {
+  const client = await pool.connect();
+  try {
+    const query = 'SELECT * FROM users WHERE email = $1 OR name = $2';
+    const result = await client.query(query, [emailOrUsername, emailOrUsername]);
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
+};
+
+
+// a função updateUserProfile 
 export const updateUserProfile = async (id, updates) => {
   const client = await pool.connect();
   try {

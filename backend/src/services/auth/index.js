@@ -30,12 +30,12 @@ const transporter = nodemailer.createTransport({
 });
 
 // Função para login
-export const loginRouteHandler = async (req, res, email, password) => {
+export const loginRouteHandler = async (req, res, emailOrUsername, password) => {
   try {
     const client = await pool.connect();
 
-    // Verificar se o utilizador existe
-    const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+    // Verificar se o utilizador existe por email ou username
+    const result = await client.query('SELECT * FROM users WHERE email = $1 OR name = $2', [emailOrUsername, emailOrUsername]);
     const foundUser = result.rows[0];
 
     if (!foundUser) {
@@ -48,7 +48,7 @@ export const loginRouteHandler = async (req, res, email, password) => {
     if (validPassword) {
       // Gerar token JWT
       const token = jwt.sign(
-        { id: foundUser.id, email: foundUser.email },
+        { id: foundUser.id, email: foundUser.email, name: foundUser.name },
         process.env.JWT_SECRET,
         { expiresIn: "24h" }
       );
@@ -79,11 +79,18 @@ export const registerRouteHandler = async (req, res, name, email, password) => {
 
     client = await pool.connect();
 
-    const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
-    const foundUser = result.rows[0];
+    const emailResult = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+    const foundEmail = emailResult.rows[0];
 
-    if (foundUser) {
+    const usernameResult = await client.query('SELECT * FROM users WHERE name = $1', [name]);
+    const foundUsername = usernameResult.rows[0];
+
+    if (foundEmail) {
       return res.status(400).json({ message: "Email já está em uso" });
+    }
+
+    if (foundUsername) {
+      return res.status(400).json({ message: "Username já está em uso" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -93,7 +100,7 @@ export const registerRouteHandler = async (req, res, name, email, password) => {
       [name, email, hashedPassword]
     );
 
-    return res.status(201).json({ message: "utilizador registrado com sucesso" });
+    return res.status(201).json({ message: "Utilizador registrado com sucesso" });
   } catch (error) {
     console.error("Error during user registration:", error);
     if (!res.headersSent) {
@@ -103,23 +110,6 @@ export const registerRouteHandler = async (req, res, name, email, password) => {
     if (client) client.release();
   }
 };
-
-
-// Rota de registro
-router.post("/register", async (req, res) => {
-  try {
-    const { name, email, password } = req.body.data.attributes;
-    await registerRouteHandler(req, res, name, email, password);
-  } catch (error) {
-    if (!res.headersSent) {
-      res.status(500).json({ error: "Internal Server Error" });
-    } else {
-      console.error("Cannot send response, headers already sent.", error);
-    }
-  }
-});
-
-
 
 // Função para recuperação de senha
 export const forgotPasswordRouteHandler = async (req, res, email) => {
@@ -211,3 +201,4 @@ export const resetPasswordRouteHandler = async (req, res) => {
     return res.status(500).json({ message: "Erro interno do servidor" });
   }
 };
+
