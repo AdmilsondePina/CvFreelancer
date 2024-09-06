@@ -7,6 +7,7 @@ import {
   resetPasswordRouteHandler,
 } from '../../services/auth/index.js';
 import { findUserByEmailOrUsername } from '../../schemas/user.schema.js';
+import { findUserByEmail } from '../../schemas/user.schema.js';
 
 const router = express.Router();
 
@@ -15,9 +16,9 @@ router.post('/login', async (req, res) => {
     if (!req.body || !req.body.data || !req.body.data.attributes) {
       return res.status(400).json({ error: "Invalid request format" });
     }
-    const { emailOrUsername, password } = req.body.data.attributes;
+    const { email, password } = req.body.data.attributes;
 
-    const user = await findUserByEmailOrUsername(emailOrUsername);
+    const user = await findUserByEmail(email);
     if (!user) {
       console.log('User not found');
       return res.status(404).json({ error: "User not found" });
@@ -97,11 +98,10 @@ router.post('/check-name', async (req, res) => {
     }
 
   } catch (error) {
-    console.error('Error checking username:', error);
+    console.error('Error g username:', error);
     return res.status(500).json({ available: false, message: "Erro ao verificar o nome de utilizador" });
   }
 });
-
 
 export default router;
 

@@ -16,7 +16,6 @@ class AuthService {
   login = async (payload) => {
     try {
       
-  
       // Envia a requisição de login
       const response = await HttpService.post(AUTH_ENDPOINTS.LOGIN, payload);
   
@@ -38,18 +37,25 @@ class AuthService {
   };    
   
   register = async (credentials) => {
-    // Verifica se o nome de usuário já está em uso
-    const nameCheckResponse = await HttpService.post(AUTH_ENDPOINTS.CHECK_NAME, { name: credentials.name });
+
+    try {
+      // Verifica se o nome já está em uso
     
-    if (!nameCheckResponse.available) {
-      throw new Error(nameCheckResponse.message || "Nome de usuário já está em uso.");
+      const nameCheckResponse = await this.checkname(credentials.data.attributes.name);
+      
+  
+      if (!nameCheckResponse) {
+        throw new Error("Nome de utilizador já está em uso.");
+      }
+  
+      // Se o nome estiver disponível, continua com o registro
+      return await HttpService.post(AUTH_ENDPOINTS.REGISTER, credentials);
+    } catch (error) {
+      console.error("Error during registration:", error);
+      throw error;  
     }
-    
-    // Se o nome estiver disponível, continua com o registro
-    return await HttpService.post(AUTH_ENDPOINTS.REGISTER, credentials);
   };
   
-
   logout = async () => {
     return await HttpService.post(AUTH_ENDPOINTS.LOGOUT);
   };
@@ -63,6 +69,7 @@ class AuthService {
       throw error;
     }
   };
+   
 
   forgotPassword = async (payload) => {
     return await HttpService.post(AUTH_ENDPOINTS.FORGOT_PASSWORD, payload);

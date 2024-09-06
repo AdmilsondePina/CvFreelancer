@@ -10,7 +10,6 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 import AuthService from "services/auth-service";
 import { AuthContext } from "context";
-import { InputLabel } from "@mui/material";
 
 function Register() {
   const authContext = useContext(AuthContext);
@@ -33,29 +32,38 @@ function Register() {
     errorText: "",
   });
 
-  const [suggestedname, setSuggestedname] = useState("");
+  const [suggestedName, setSuggestedName] = useState("");
 
   const changeHandler = async (e) => {
     const { name, value } = e.target;
+
     setInputs({
       ...inputs,
-      [name]: value,
+      [name]: value.trim(),
     });
 
+    // Verifica se o campo é o nome
     if (name === 'name') {
-      checknameAvailability(value);
+      await checkNameAvailability(value.trim());
     }
   };
 
-  const checknameAvailability = async (name) => {
+  const checkNameAvailability = async (name) => {
+    // Verifica se o campo do nome está vazio
+    if (!name) {
+      setSuggestedName("");
+      setErrors({ ...errors, nameError: false }); // Reseta erro de nome
+      return;
+    }
+
     try {
       const isAvailable = await AuthService.checkname(name);
       if (!isAvailable) {
-        const newname = `${name}${Math.floor(Math.random() * 1000)}`;
-        setSuggestedname(newname);
+        const newName = `${name}${Math.floor(Math.random() * 1000)}`;
+        setSuggestedName(newName); // Sugere um novo nome
         setErrors({ ...errors, nameError: true });
       } else {
-        setSuggestedname("");
+        setSuggestedName(""); // Limpa a sugestão se o nome estiver disponível
         setErrors({ ...errors, nameError: false });
       }
     } catch (error) {
@@ -68,7 +76,7 @@ function Register() {
 
     const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-    if (inputs.name.trim().length === 0) {
+    if (inputs.name.length === 0 || errors.nameError) {
       setErrors({ ...errors, nameError: true });
       return;
     }
@@ -88,7 +96,7 @@ function Register() {
       return;
     }
 
-    if (inputs.agree === false) {
+    if (!inputs.agree) {
       setErrors({ ...errors, agreeError: true });
       return;
     }
@@ -116,6 +124,7 @@ function Register() {
       const response = await AuthService.register(myData);
       authContext.login(response.access_token, response.refresh_token);
 
+      // Reset inputs and errors
       setInputs({
         name: "",
         email: "",
@@ -157,7 +166,7 @@ function Register() {
             Cv Freelancer
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Insira seu nome, email, e password para criar sua conta
+            Insira um username, seu email e password para criar sua conta
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -179,9 +188,15 @@ function Register() {
                   },
                 }}
               />
-              {errors.nameError && (
+              {errors.nameError && inputs.name.length === 0 && (
                 <MDTypography variant="caption" color="error" fontWeight="light">
-                  O nome de usuário já existe. Sugestão: {suggestedname}
+                  O campo Username não pode estar vazio.
+                </MDTypography>
+              )}
+              {errors.nameError && inputs.name.length > 0 && (
+                <MDTypography variant="caption" color="error" fontWeight="light">
+                  O Username já existe. <br />
+                  Sugestão: {suggestedName}
                 </MDTypography>
               )}
             </MDBox>
@@ -242,58 +257,39 @@ function Register() {
                 </MDTypography>
               )}
             </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Checkbox name="agree" id="agree" onChange={changeHandler} />
-              <InputLabel
-                variant="standard"
-                fontWeight="regular"
-                color="text"
-                sx={{ lineHeight: "1.5", cursor: "pointer" }}
-                htmlFor="agree"
-              >
-                &nbsp;&nbsp;Eu concordo com&nbsp;
-              </InputLabel>
-              <MDTypography
-                component={Link}
-                to="/auth/login"
-                variant="button"
-                fontWeight="bold"
-                color="info"
-                textGradient
-              >
-                Termos e Condições
+            <MDBox display="flex" alignItems="center">
+              <Checkbox
+                checked={inputs.agree}
+                onChange={() => setInputs({ ...inputs, agree: !inputs.agree })}
+              />
+              <MDTypography variant="button" color="text" fontWeight="regular">
+                Concordo com as{" "}
+                <MDTypography
+                  component={Link}
+                  to="#"
+                  variant="button"
+                  color="info"
+                  fontWeight="medium"
+                >
+                  Políticas de Privacidade
+                </MDTypography>
               </MDTypography>
             </MDBox>
             {errors.agreeError && (
               <MDTypography variant="caption" color="error" fontWeight="light">
-                Precisas acordar com os Termos e Condições
+                Você deve concordar com as políticas de privacidade
               </MDTypography>
             )}
+            <MDBox mt={4} mb={1}>
+              <MDButton type="submit" variant="gradient" color="info" fullWidth>
+                Criar conta
+              </MDButton>
+            </MDBox>
             {errors.error && (
               <MDTypography variant="caption" color="error" fontWeight="light">
                 {errors.errorText}
               </MDTypography>
             )}
-            <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Criar
-              </MDButton>
-            </MDBox>
-            <MDBox mt={3} mb={1} textAlign="center">
-              <MDTypography variant="button" color="text">
-                Ja tens uma conta?{" "}
-                <MDTypography
-                  component={Link}
-                  to="/auth/login"
-                  variant="button"
-                  color="info"
-                  fontWeight="medium"
-                  textGradient
-                >
-                  Entrar
-                </MDTypography>
-              </MDTypography>
-            </MDBox>
           </MDBox>
         </MDBox>
       </Card>
