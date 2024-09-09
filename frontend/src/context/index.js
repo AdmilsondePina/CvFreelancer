@@ -48,6 +48,13 @@ const AuthContextProvider = ({ children }) => {
     navigate("/dashboard");
   };
 
+  const register = (token) => {
+    localStorage.setItem('token', token);
+    setIsAuthenticated(true);
+    navigate("/auth/register/register-more/info");
+};
+
+
   const logout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
@@ -55,7 +62,7 @@ const AuthContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

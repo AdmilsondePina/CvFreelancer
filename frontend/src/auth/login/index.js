@@ -25,7 +25,7 @@ import MDButton from "components/MDButton";
 import BasicLayoutLanding from "layouts/authentication/components/BasicLayoutLanding";
 
 // Images
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import bgImage from "assets/images/Login.png";
 
 import AuthService from "services/auth-service";
 import { AuthContext } from "context";
@@ -204,7 +204,7 @@ function Login() {
                   fontWeight="medium"
                   textGradient
                 >
-                  criar conta
+                  Criar conta
                 </MDTypography>
               </MDTypography>
             </MDBox>

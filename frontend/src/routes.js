@@ -14,6 +14,7 @@ import Login from "auth/login";
 import Register from "auth/register";
 import ForgotPassword from "auth/forgot-password";
 import ResetPassword from "auth/reset-password";
+import MoreInfo from "auth/register/register-more/info/register-more-info"; // Importe o componente MoreInfo
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -111,7 +112,7 @@ const routes = [
     type: "auth",
     name: "Register",
     key: "register",
-    icon: <Icon fontSize="small">reigster</Icon>,
+    icon: <Icon fontSize="small">register</Icon>, 
     route: "/auth/register",
     component: <Register />,
   },
@@ -131,6 +132,15 @@ const routes = [
     route: "/auth/reset-password",
     component: <ResetPassword />,
   },
+  {
+    type: "auth",
+    name: "More Info",
+    key: "more-info",
+    icon: <Icon fontSize="small">info</Icon>,
+    route: "/auth/register/register-more/info",
+    component: <MoreInfo />,
+  },  
 ];
 
 export default routes;
+

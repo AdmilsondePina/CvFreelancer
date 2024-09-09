@@ -7,7 +7,7 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
-import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+import bgImage from "assets/images/cidadevelha.jpg";
 import AuthService from "services/auth-service";
 import { AuthContext } from "context";
 
@@ -122,7 +122,7 @@ function Register() {
 
     try {
       const response = await AuthService.register(myData);
-      authContext.login(response.access_token, response.refresh_token);
+      authContext.register(response.access_token, response.refresh_token);
 
       // Reset inputs and errors
       setInputs({

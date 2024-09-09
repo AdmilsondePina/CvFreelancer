@@ -13,7 +13,7 @@ import MDAlert from "components/MDAlert";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
-import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+import bgImage from "assets/images/mar.jpg";
 
 import AuthService from "services/auth-service";
 
