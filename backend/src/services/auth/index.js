@@ -126,7 +126,7 @@ export const forgotPasswordRouteHandler = async (req, res, email) => {
     } else {
       const token = randomToken(20);
 
-      // Enviar email de redefinição de senha
+      //  email de redefinição de senha
       await transporter.sendMail({
         from: "admin@jsonapi.com", // endereço do remetente
         to: email, // lista de destinatários

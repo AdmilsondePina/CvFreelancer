@@ -6,7 +6,7 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
-import bgImage from "assets/images/vulcao.jpg";
+import bgImage from "assets/images/cidadevelha1.jpg";
 import AuthService from "services/auth-service";
 
 function MoreInfo() {

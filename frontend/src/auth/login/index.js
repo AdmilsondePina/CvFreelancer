@@ -25,7 +25,8 @@ import MDButton from "components/MDButton";
 import BasicLayoutLanding from "layouts/authentication/components/BasicLayoutLanding";
 
 // Images
-import bgImage from "assets/images/Login.png";
+import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import LogoCvFreelancer from "assets/images/LogoCvFreelancer.png";
 
 import AuthService from "services/auth-service";
 import { AuthContext } from "context";
@@ -99,6 +100,24 @@ function Login() {
 
   return (
     <BasicLayoutLanding image={bgImage}>
+  <MDBox
+  position="absolute"
+  top={{ xs: 10, sm: 20, md: 50 }}  
+  right={{ xs: 10, sm: 20, md: 100 }}  
+  display="flex"
+  justifyContent="flex-start"
+  alignItems="center"
+  zIndex={1000} 
+  p={2}
+>
+  <img
+    src={LogoCvFreelancer}
+    alt="Logo Cabo Verde Freelancer"
+    style={{ height: "100px", maxHeight: "150px", width: "auto" }}  
+  />
+ </MDBox>
+
+
       <Card>
         <MDBox
           variant="gradient"
@@ -111,8 +130,11 @@ function Login() {
           mb={1}
           textAlign="center"
         >
+          
+       
+
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Cv Freelancer
+            Cabo Verde Freelancer
           </MDTypography>
           <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={2}>

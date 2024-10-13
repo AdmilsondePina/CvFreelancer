@@ -42,10 +42,10 @@ function Footer({ light }) {
                 favorite
               </Icon>
             </MDBox>
-            pelo
+            pela
             <Link href="" target="_blank">
               <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
-                &nbsp;Cv Freelancer&nbsp;
+                &nbsp;Cabo Verde Freelancer&nbsp;
               </MDTypography>
             </Link>
             para um Cabo Verde com mais oportunidade.

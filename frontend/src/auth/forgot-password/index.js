@@ -13,7 +13,7 @@ import MDAlert from "components/MDAlert";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
-import bgImage from "assets/images/cidadevelha1.jpg";
+import bgImage from "assets/images/vulcao.jpg";
 import authService from "services/auth-service";
 
 function ForgotPassword() {
