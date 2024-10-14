@@ -100,7 +100,7 @@ function Login() {
 
   return (
     <BasicLayoutLanding image={bgImage}>
-  <MDBox
+   <MDBox
   position="absolute"
   top={{ xs: 10, sm: 20, md: 50 }}  
   right={{ xs: 10, sm: 20, md: 100 }}  
@@ -116,6 +116,7 @@ function Login() {
     style={{ height: "100px", maxHeight: "150px", width: "auto" }}  
   />
  </MDBox>
+ 
 
 
       <Card>
